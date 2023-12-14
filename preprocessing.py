@@ -159,7 +159,8 @@ class Preprocess:
 
         # Process queries
         for key, value in self.queries.items():
-            new_title = self.queries[key]
+            print(key)
+            new_title = self.queries[key]['title']
             new_title = self.case_folding(new_title)
             new_title = self.special_characters_remover(new_title)
             new_title = self.tokenizer(new_title)
@@ -169,14 +170,12 @@ class Preprocess:
 
             # Build queries tokens
             self.queries_tokens[key] = copy.deepcopy(new_title)
-            
-
 
 
 a = Preprocess()
 a.load_data()
-a.process_data()
-print(a.docs_tokens)
+# a.process_data()
+# print(a.queries_tokens)
 # print(a.docs)
 # print(a.queries)
-# print(a.results)
+print(a.results)
