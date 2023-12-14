@@ -22,6 +22,8 @@ class Preprocess:
         self.docs = dict()
         self.queries = dict()
         self.results = dict()
+        self.docs_tokens = dict()
+        self.queries_tokens = dict()
 
     def load_data(self):
         # Load documents
@@ -69,41 +71,79 @@ class Preprocess:
                 temp = f.readline()  # Read again
             self.results = copy.deepcopy(results)
 
-        @staticmethod
-        def case_folding(word: str):
-            new_word = word.lower()
-            return new_word
+    @staticmethod
+    def case_folding(text: str):  # Handle upper case characters
+        new_word = text.lower()
+        return new_word
 
-        @staticmethod
-        def special_characters_remover(word: str):  # Eliminates all the special characters like {, . : ; }
-            normalized_word = re.sub(r'[^\w\s]', '', word)
-            return normalized_word
+    @staticmethod
+    def special_characters_remover(text: str):  # Eliminates all the special characters like {, . : ; }
+        normalized_word = re.sub(r'[^\w\s]', '', text)
+        return normalized_word
 
-        @staticmethod
-        def tokenizer(text: str):
-            tokens = word_tokenize(text)
-            return tokens
+    @staticmethod
+    def tokenizer(text: str):  # Tokenize the text
+        tokens = word_tokenize(text)
+        return tokens
 
-        @staticmethod
-        def stop_word_remover(tokens: list):
-            stop_words = set(stopwords.words('english'))
-            new_tokens = []
-            for token in tokens:
-                if token not in stop_words:
-                    new_tokens.append(token)
-            return copy.deepcopy(new_tokens)
+    @staticmethod
+    def stop_word_remover(tokens: list):  # Eliminate stop words
+        stop_words = set(stopwords.words('english'))
+        new_tokens = []
+        for token in tokens:
+            if token not in stop_words:
+                new_tokens.append(token)
+        return copy.deepcopy(new_tokens)
 
-        @staticmethod
-        def stemmer(tokens: list):
-            stemmer_obj = PorterStemmer()
-            stemmed_tokens = [stemmer_obj.stem(token) for token in tokens]
-            return stemmed_tokens
+    @staticmethod
+    def stemmer(tokens: list):  # Stemming the tokens
+        stemmer_obj = PorterStemmer()
+        stemmed_tokens = [stemmer_obj.stem(token) for token in tokens]
+        return stemmed_tokens
 
-        @staticmethod
-        def lemmatizer(tokens: list):
-            lemmatizer_obj = WordNetLemmatizer()
-            lemmatized_tokens = [lemmatizer_obj.lemmatize(token) for token in tokens]
-            return lemmatized_tokens
+    @staticmethod
+    def lemmatizer(tokens: list):  # Lemmatize the tokens
+        lemmatizer_obj = WordNetLemmatizer()
+        lemmatized_tokens = [lemmatizer_obj.lemmatize(token) for token in tokens]
+        return lemmatized_tokens
+
+    def handle_missing_values(self):
+        pass
+    def process_data(self):
+        # Process documents
+        for key, value in self.docs.items():
+            print(key)
+            # Process title
+            new_title = self.docs[key]['title']  # Load title
+            new_title = self.case_folding(new_title)  # Handle upper case characters
+            new_title = self.special_characters_remover(new_title)  # Eliminate special characters
+            new_title = self.tokenizer(new_title)  # Tokenize title
+            new_title = self.stop_word_remover(new_title)  # Eliminate stop words
+            new_title = self.stemmer(new_title)  # Apply stemming
+            new_title = self.lemmatizer(new_title)  # Apply lemmatization
+
+            # Process text
+            new_text = self.docs[key]['text']  # Load title
+            new_text = self.case_folding(new_text)  # Handle upper case characters
+            new_text = self.special_characters_remover(new_text)  # Eliminate special characters
+            new_text = self.tokenizer(new_text)  # Tokenize title
+            new_text = self.stop_word_remover(new_text)  # Eliminate stop words
+            new_text = self.stemmer(new_text)  # Apply stemming
+            new_text = self.lemmatizer(new_text)  # Apply lemmatization
+
+            # Load other data
+            author = self.docs[key]['author']
+            bib = self.docs[key]['bib']
+
+            # Build document tokens
+            self.docs_tokens[key] = {'title': copy.deepcopy(new_title), 'author': copy.deepcopy(author), 'bib': copy.deepcopy(bib), 'text': copy.deepcopy(new_text)}
 
 
-a = Preprocess().load_data()
+
+a = Preprocess()
+a.load_data()
+a.process_data()
+print(a.docs_tokens)
+# print(a.docs)
+# print(a.queries)
+# print(a.results)
