@@ -131,7 +131,6 @@ class Preprocess:
 
         # Process documents
         for key, value in self.docs.items():
-            print(key)
             # Process title
             new_title = self.docs[key]['title']  # Load title
             new_title = self.case_folding(new_title)  # Handle upper case characters
@@ -159,7 +158,6 @@ class Preprocess:
 
         # Process queries
         for key, value in self.queries.items():
-            print(key)
             new_title = self.queries[key]['title']
             new_title = self.case_folding(new_title)
             new_title = self.special_characters_remover(new_title)
