@@ -1,5 +1,6 @@
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
+
 class Evaluation:
     def __init__(self, pred, true):
         self.pred = pred
@@ -18,5 +19,9 @@ class Evaluation:
         return f1_score(self.true, self.pred, average='weighted')
 
     def evaluate(self):
-        results = {"accuracy": self.accuracy(), "precision": self.precision(), "recall": self.recall(), "f1score": self.f1score()}
+        results = {"accuracy": self.accuracy(), "precision": self.precision(), "recall": self.recall(),
+                   "f1score": self.f1score()}
         return results
+
+    def evaluate_vector_space_model(self):
+        pass
