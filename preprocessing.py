@@ -25,6 +25,7 @@ class Preprocess:
         self.docs_tokens = dict()
         self.queries_tokens = dict()
 
+
     def load_data(self):
         # Load documents
         tree_docs = ET.parse(self.file_path_docs)
@@ -108,8 +109,26 @@ class Preprocess:
         return lemmatized_tokens
 
     def handle_missing_values(self):
-        pass
+        # Handle missing values in documents
+        docs_pop_keys = []
+        for key, value in self.docs.items():
+            if value['title'] is None or value['author'] is None or value['bib'] is None or value['text'] is None:
+                docs_pop_keys.append(key)
+        for key in docs_pop_keys:
+            self.docs.pop(key, None)
+
+        # Handle missing values in queries
+        queries_pop_keys = []
+        for key, value in self.queries.items():
+            if value['title'] is None:
+                queries_pop_keys.append(key)
+        for key in queries_pop_keys:
+            self.queries.pop(key, None)
+
     def process_data(self):
+        # Handle missing values of dataset
+        self.handle_missing_values()
+
         # Process documents
         for key, value in self.docs.items():
             print(key)
@@ -137,6 +156,20 @@ class Preprocess:
 
             # Build document tokens
             self.docs_tokens[key] = {'title': copy.deepcopy(new_title), 'author': copy.deepcopy(author), 'bib': copy.deepcopy(bib), 'text': copy.deepcopy(new_text)}
+
+        # Process queries
+        for key, value in self.queries.items():
+            new_title = self.queries[key]
+            new_title = self.case_folding(new_title)
+            new_title = self.special_characters_remover(new_title)
+            new_title = self.tokenizer(new_title)
+            new_title = self.stop_word_remover(new_title)
+            new_title = self.stemmer(new_title)
+            new_title = self.lemmatizer(new_title)
+
+            # Build queries tokens
+            self.queries_tokens[key] = copy.deepcopy(new_title)
+            
 
 
 
