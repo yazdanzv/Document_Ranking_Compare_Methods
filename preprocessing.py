@@ -172,10 +172,3 @@ class Preprocess:
             self.queries_tokens[key] = copy.deepcopy(new_title)
 
 
-a = Preprocess()
-a.load_data()
-# a.process_data()
-# print(a.queries_tokens)
-# print(a.docs)
-# print(a.queries)
-print(a.results)
