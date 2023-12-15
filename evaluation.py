@@ -1,22 +1,18 @@
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
 
 
 class Evaluation:
-    def __init__(self, pred, true):
-        self.pred = pred
-        self.true = true
+    def __init__(self, top_k_results: list, relevant_docs: list):
+        self.top_k_results = top_k_results
+        self.relevant_docs = relevant_docs
+        print(self.top_k_results)
+        print(self.relevant_docs)
 
-    def accuracy(self):
-        return accuracy_score(self.true, self.pred)
-
-    def precision(self):
-        return precision_score(self.true, self.pred, average='weighted')
-
-    def recall(self):
-        return recall_score(self.true, self.pred, average='weighted')
-
-    def f1score(self):
-        return f1_score(self.true, self.pred, average='weighted')
+    def precision_at_k(self, k: int):
+        count = 0
+        for i in range(k):
+            if self.pred[i]:
+                pass
 
     def evaluate(self):
         results = {"accuracy": self.accuracy(), "precision": self.precision(), "recall": self.recall(),

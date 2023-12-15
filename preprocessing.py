@@ -49,14 +49,13 @@ class Preprocess:
         for query in root_queries.findall('top'):  # Load queries data
             num = query.find('num').text
             title = query.find('title').text
-            queries[copy.deepcopy(num)] = {'title': copy.deepcopy(title)}
+            queries[copy.deepcopy(num)] = copy.deepcopy(title)
         self.queries = copy.deepcopy(queries)
 
         # Load results for evaluation
         results = dict()  # To store data
         with open(self.file_path_results, 'r') as f:
             temp = f.readline()
-            print(type(temp))
             while temp != '':
                 temp = temp.split(' ')  # Convert it to list
                 query_id = copy.deepcopy(temp[0])  # ID of the query
@@ -64,9 +63,9 @@ class Preprocess:
                 doc_id = copy.deepcopy(temp[2])  # Document ID
                 relevancy = copy.deepcopy(temp[3])[:-1]  # Result of relevancy (0 for not relevant, 1 for relevant)
                 if query_id not in results:  # Build results dictionary to store data properly
-                    results[query_id] = [{'docno': doc_id, 'relevancy': relevancy}]
+                    results[query_id] = [(doc_id,relevancy)]
                 elif query_id in results:
-                    results[query_id].append({'docno': doc_id, 'relevancy': relevancy})
+                    results[query_id].append((doc_id,relevancy))
                 else:
                     raise Exception("ERROR")
                 temp = f.readline()  # Read again
@@ -120,7 +119,7 @@ class Preprocess:
         # Handle missing values in queries
         queries_pop_keys = []
         for key, value in self.queries.items():
-            if value['title'] is None:
+            if value is None:
                 queries_pop_keys.append(key)
         for key in queries_pop_keys:
             self.queries.pop(key, None)
@@ -158,7 +157,7 @@ class Preprocess:
 
         # Process queries
         for key, value in self.queries.items():
-            new_title = self.queries[key]['title']
+            new_title = self.queries[key]
             new_title = self.case_folding(new_title)
             new_title = self.special_characters_remover(new_title)
             new_title = self.tokenizer(new_title)
