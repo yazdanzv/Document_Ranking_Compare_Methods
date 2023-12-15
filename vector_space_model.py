@@ -65,7 +65,7 @@ class VectorSpaceModel:
         self.top_k_results = answer
         return answer
 
-    def find_relevant_docs(self, answer: list):  # Make precision - recall list
+    def find_relevant_docs(self):  # Make precision - recall list
         query_id = str()
         for i in range(len(list(self.queries_tokens.keys()))):
             temp = self.query.split(" ")
@@ -77,4 +77,4 @@ class VectorSpaceModel:
 
     def evaluate(self):
         eval = Evaluation(self.top_k_results, self.relevant_docs)
-        
+

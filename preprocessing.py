@@ -46,10 +46,12 @@ class Preprocess:
         tree_queries = ET.parse(self.file_path_queries)
         root_queries = tree_queries.getroot()
         queries = dict()  # To store data
+        query_id = 1
         for query in root_queries.findall('top'):  # Load queries data
-            num = query.find('num').text
+            # num = query.find('num').text.strip()
             title = query.find('title').text
-            queries[copy.deepcopy(num)] = copy.deepcopy(title)
+            queries[copy.deepcopy(str(query_id))] = copy.deepcopy(title)
+            query_id += 1
         self.queries = copy.deepcopy(queries)
 
         # Load results for evaluation
