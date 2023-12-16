@@ -38,24 +38,27 @@ class Okapi_BM25:
 
         # Adjust BM25 parameters based on query length
         if query_length > 5:  # Long query
-            k1 = 2.0  # Example: increase k1 for long queries
-            b = 0.5  # Example: decrease b for long queries
+            k1 = 2.0
+            b = 0.5
         else:  # Short query
             k1 = 1.5
             b = 0.75
 
         scores = {doc: self.bm25(doc, query, idf_scores, k1, b) for doc in doc_list}
         ranked_docs = sorted(doc_list, key=lambda doc: scores[doc], reverse=True)
+        ranked_docs = [(ranked_docs[i], scores[ranked_docs[i]]) for i in range(len(ranked_docs))]
 
         return ranked_docs[:top_k]
 
     def start(self, query: str, top_k: int):
         ranked_docs = self.rank_documents(query, self.doc_list, top_k)
-        return ranked_docs
+        ranked_docs_ids = []
+        for i in range(len(ranked_docs)):
+            for key, value in self.doc_tokens.items():
+                if ranked_docs[i][0] == " ".join(self.doc_tokens[key]['title']) + " " + " ".join(
+                        self.doc_tokens[key]['text']):
+                    ranked_docs_ids.append((key, ranked_docs[i][1]))
+
+        return ranked_docs_ids
 
 
-# # Example usage
-# doc_list = ["the quick brown fox", "the slow brown dog", "the fast grey hare"]
-# query = "quick brown"
-# top_docs = rank_documents(query, doc_list, 2)
-# print(top_docs)

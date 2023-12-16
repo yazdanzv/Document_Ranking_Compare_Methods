@@ -61,7 +61,7 @@ class VectorSpaceModel:
                     ranked_list.append((key, ranked_documents[i][1]))
 
         self.ranked_list = ranked_list  # Sorted
-        answer = [ranked_list[i][0] for i in range(top_k)]  # Top k answer
+        answer = [ranked_list[i] for i in range(top_k)]  # Top k answer
         self.top_k_results = answer
         return answer
 
@@ -74,7 +74,3 @@ class VectorSpaceModel:
 
         relevant_docs = self.results[query_id]
         self.relevant_docs = relevant_docs
-
-    def evaluate(self):
-        eval = Evaluation(self.top_k_results, self.relevant_docs)
-
