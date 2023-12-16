@@ -1,5 +1,6 @@
 from preprocessing import Preprocess
 from vector_space_model import VectorSpaceModel
+from probabilistic_model import Okapi_BM25
 
 a = Preprocess()
 a.load_data()
@@ -18,3 +19,11 @@ b.vectorize_docs()
 ans = b.query_the_docs(" ".join(a.queries_tokens['1']), 11)
 b.find_relevant_docs()
 b.evaluate()
+
+# probabilistic model
+c = Okapi_BM25(b.docs, a.docs_tokens, a.queries_tokens, a.results)
+print("PM Results")
+c_ans = c.start(" ".join(a.queries_tokens['1']), 11)
+print(c_ans)
+print(len(c_ans))
+print(type(c_ans))
