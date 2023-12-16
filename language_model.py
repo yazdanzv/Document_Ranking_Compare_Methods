@@ -2,10 +2,8 @@ import copy
 
 
 class LanguageModel:
-    def __init__(self, docs_tokens: dict, query_tokens: dict, results: dict):
+    def __init__(self, docs_tokens: dict):
         self.docs_tokens = docs_tokens
-        self.query_tokens = query_tokens
-        self.results = results
         self.priority = {'trigram': 10, 'bigram': 5, 'unigram': 1}
 
     def trigram(self, query: str):

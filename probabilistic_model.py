@@ -3,11 +3,9 @@ from collections import Counter
 
 
 class Okapi_BM25:
-    def __init__(self, doc_list: list, doc_tokens: dict, query_tokens: dict, results: list):
-        self.doc_list = doc_list
+    def __init__(self, doc_tokens: dict):
         self.doc_tokens = doc_tokens
-        self.query_tokens = query_tokens
-        self.results = results
+        self.doc_list = [" ".join(value['text']) for _, value in doc_tokens.items()]
 
     def compute_idf(self, doc_list):
         idf_scores = {}
@@ -37,28 +35,26 @@ class Okapi_BM25:
         query_length = len(query.split())
 
         # Adjust BM25 parameters based on query length
-        if query_length > 5:  # Long query
-            k1 = 2.0
-            b = 0.5
+        if query_length > 10:  # Long query
+            k1 = 2.0  # Example: increase k1 for long queries
+            b = 0.5  # Example: decrease b for long queries
         else:  # Short query
             k1 = 1.5
             b = 0.75
 
-        scores = {doc: self.bm25(doc, query, idf_scores, k1, b) for doc in doc_list}
-        ranked_docs = sorted(doc_list, key=lambda doc: scores[doc], reverse=True)
+        scores = {key: self.bm25(" ".join(self.doc_tokens[key]['text']), query, idf_scores, k1, b) for key, _ in self.doc_tokens.items()}
+        ranked_docs = sorted(scores, key=lambda doc: scores[doc], reverse=True)
         ranked_docs = [(ranked_docs[i], scores[ranked_docs[i]]) for i in range(len(ranked_docs))]
 
         return ranked_docs[:top_k]
 
     def start(self, query: str, top_k: int):
         ranked_docs = self.rank_documents(query, self.doc_list, top_k)
-        ranked_docs_ids = []
-        for i in range(len(ranked_docs)):
-            for key, value in self.doc_tokens.items():
-                if ranked_docs[i][0] == " ".join(self.doc_tokens[key]['title']) + " " + " ".join(
-                        self.doc_tokens[key]['text']):
-                    ranked_docs_ids.append((key, ranked_docs[i][1]))
-
-        return ranked_docs_ids
+        return ranked_docs
 
 
+# # Example usage
+# doc_list = ["the quick brown fox", "the slow brown dog", "the fast grey hare"]
+# query = "quick brown"
+# top_docs = rank_documents(query, doc_list, 2)
+# print(top_docs)
