@@ -81,3 +81,6 @@ class LanguageModel:
         print(documents_scores)
         print("SCORES")
 
+        documents_scores_top_k = documents_scores[:top_k]
+        return documents_scores_top_k
+
