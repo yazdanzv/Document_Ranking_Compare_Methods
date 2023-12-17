@@ -19,8 +19,7 @@ ans = b.query_the_docs(" ".join(a.queries_tokens['1']), 11)
 print("VSM results")
 print(ans)
 
-e = Evaluation(ans, " ".join(a.queries_tokens['1']), a.queries_tokens, a.results)
-e.recall_precision_pair()
+e = Evaluation(ans, a.queries_tokens, a.results)
 e_ans = e.k_points_interpolated_average_precision()
 
 # # probabilistic model
