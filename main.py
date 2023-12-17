@@ -2,6 +2,7 @@ from preprocessing import Preprocess
 from vector_space_model import VectorSpaceModel
 from probabilistic_model import Okapi_BM25
 from language_model import LanguageModel
+from evaluation import Evaluation
 
 a = Preprocess()
 a.load_data()
@@ -18,14 +19,18 @@ ans = b.query_the_docs(" ".join(a.queries_tokens['1']), 11)
 print("VSM results")
 print(ans)
 
-# probabilistic model
-c = Okapi_BM25(a.docs_tokens)
-print("PM Results")
-c_ans = c.start(" ".join(a.queries_tokens['1']), 11)
-print(c_ans)
+e = Evaluation(ans, " ".join(a.queries_tokens['1']), a.queries_tokens, a.results)
+e.recall_precision_pair()
+e_ans = e.k_points_interpolated_average_precision()
 
-# Language Model
-d = LanguageModel(a.docs_tokens)
-d_ans = d.start(" ".join(a.queries_tokens['1']), 11)
-print("LM Results")
-print(d_ans)
+# # probabilistic model
+# c = Okapi_BM25(a.docs_tokens)
+# print("PM Results")
+# c_ans = c.start(" ".join(a.queries_tokens['1']), 11)
+# print(c_ans)
+#
+# # Language Model
+# d = LanguageModel(a.docs_tokens)
+# d_ans = d.start(" ".join(a.queries_tokens['1']), 11)
+# print("LM Results")
+# print(d_ans)
