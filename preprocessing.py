@@ -65,9 +65,9 @@ class Preprocess:
                 doc_id = copy.deepcopy(temp[2])  # Document ID
                 relevancy = copy.deepcopy(temp[3])[:-1]  # Result of relevancy (0 for not relevant, 1 for relevant)
                 if query_id not in results:  # Build results dictionary to store data properly
-                    results[query_id] = [(doc_id, relevancy)]
+                    results[query_id] = [(doc_id,relevancy)]
                 elif query_id in results:
-                    results[query_id].append((doc_id, relevancy))
+                    results[query_id].append((doc_id,relevancy))
                 else:
                     raise Exception("ERROR")
                 temp = f.readline()  # Read again

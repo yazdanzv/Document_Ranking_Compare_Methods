@@ -19,8 +19,9 @@ ans = b.query_the_docs(" ".join(a.queries_tokens['1']), 11)
 print("VSM results")
 print(ans)
 
-e = Evaluation(ans, a.queries_tokens, a.results)
+e = Evaluation(ans, " ".join(a.queries_tokens['1']), a.queries_tokens, a.results)
 e_ans = e.k_points_interpolated_average_precision()
+print(e_ans)
 
 # # probabilistic model
 # c = Okapi_BM25(a.docs_tokens)
