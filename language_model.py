@@ -6,7 +6,7 @@ class LanguageModel:
         self.docs_tokens = docs_tokens
         self.priority = {'trigram': 10, 'bigram': 5, 'unigram': 1}
 
-    def trigram(self, query: str):
+    def trigram(self, query: str):  # Method to calculate the trigrams based on the given query and calculate the scores in each documents
         query_tokens = query.split(" ")
         trigram_tokens = [str(query_tokens[i] + " " + query_tokens[i + 1] + " " + query_tokens[i + 2]).strip() for i in
                           range(len(query_tokens) - 2)]
@@ -15,9 +15,9 @@ class LanguageModel:
             for i in range(len(trigram_tokens)):
                 if trigram_tokens[i] in " ".join(value['text']):
                     trigram_results[key][trigram_tokens[i]] += 1
-        return self.dirichlet_smoothing(trigram_results)
+        return self.dirichlet_smoothing(trigram_results)  # Returns smoothed version
 
-    def bigram(self, query: str):
+    def bigram(self, query: str):  # Method to calculate the bigrams based on the given query and calculate the scores in each documents
         query_tokens = query.split(" ")
         bigram_tokens = [str(query_tokens[i] + " " + query_tokens[i + 1]).strip() for i in
                          range(len(query_tokens) - 1)]
@@ -26,9 +26,9 @@ class LanguageModel:
             for i in range(len(bigram_tokens)):
                 if bigram_tokens[i] in " ".join(value['text']):
                     bigram_results[key][bigram_tokens[i]] += 1
-        return self.dirichlet_smoothing(bigram_results)
+        return self.dirichlet_smoothing(bigram_results)  # Returns smoothed version
 
-    def unigram(self, query: str):
+    def unigram(self, query: str):  # Method to calculate the unigrams based on the given query and calculate the scores in each documents
         query_tokens = query.split(" ")
         unigram_tokens = [str(query_tokens[i]).strip() for i in range(len(query_tokens))]
         unigram_results = {key: {k: 0 for k in unigram_tokens} for key, _ in self.docs_tokens.items()}
@@ -36,9 +36,9 @@ class LanguageModel:
             for i in range(len(unigram_tokens)):
                 if unigram_tokens[i] in " ".join(value['text']):
                     unigram_results[key][unigram_tokens[i]] += 1
-        return self.dirichlet_smoothing(unigram_results)
+        return self.dirichlet_smoothing(unigram_results)  # Returns smoothed version
 
-    def dirichlet_smoothing(self, k_gram_result: dict, mu: int = 2000):
+    def dirichlet_smoothing(self, k_gram_result: dict, mu: int = 2000):  # Dirichlet Smoothing
         for key1, value1 in k_gram_result.items():
             for key2, value2 in k_gram_result[key1].items():
                 total_num_word = 0
@@ -51,10 +51,10 @@ class LanguageModel:
                 k_gram_result[key1][key2] = copy.deepcopy(temp)
         return k_gram_result
 
-    def score(self, k_gram_results: dict, doc_id: str, status: str):
+    def score(self, k_gram_results: dict, doc_id: str, status: str):  # calculate the score based on status
         return sum(value for _, value in k_gram_results[doc_id].items()) * self.priority[status]
 
-    def language_model_heavy(self, query: str, top_k: int):
+    def language_model_heavy(self, query: str, top_k: int):  # Language Model (Heavy) Uses all three
         trigram_results = self.trigram(query)
         bigram_results = self.bigram(query)
         unigram_results = self.unigram(query)
@@ -66,7 +66,7 @@ class LanguageModel:
         documents_scores_top_k = documents_scores[:top_k]
         return documents_scores_top_k
 
-    def language_model_light(self, query: str, top_k: int):
+    def language_model_light(self, query: str, top_k: int):  # Language Model (Light) Uses just unigrams
         unigram_results = self.unigram(query)
         documents_scores = {key: self.score(unigram_results, key, 'unigram') for key, _ in self.docs_tokens.items()}
         documents_scores_sorted = sorted(documents_scores, key=lambda doc: documents_scores[doc], reverse=True)
@@ -76,7 +76,7 @@ class LanguageModel:
         documents_scores_top_k = documents_scores[:top_k]
         return documents_scores_top_k
 
-    def start(self, query: str, top_k: int, status: str = 'light'):
+    def start(self, query: str, top_k: int, status: str = 'light'):  # Starts the Language Model
         if status == 'light':
             return self.language_model_light(query, top_k)
         elif status == 'heavy':

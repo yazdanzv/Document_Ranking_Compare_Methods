@@ -1,5 +1,4 @@
 import copy
-
 from preprocessing import Preprocess
 from vector_space_model import VectorSpaceModel
 from probabilistic_model import Okapi_BM25

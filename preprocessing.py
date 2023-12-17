@@ -19,12 +19,11 @@ class Preprocess:
         self.file_path_docs = '.\\cranfield-trec-dataset-main\\cran.all.1400.xml'  # XML
         self.file_path_queries = '.\\cranfield-trec-dataset-main\\cran.qry.xml'  # XML
         self.file_path_results = '.\\cranfield-trec-dataset-main\\cranqrel.trec.txt'  # Text file
-        self.docs = dict()
-        self.queries = dict()
-        self.results = dict()
-        self.docs_tokens = dict()
-        self.queries_tokens = dict()
-
+        self.docs = dict()  # Dictionary of documents
+        self.queries = dict()  # Dictionary of queries
+        self.results = dict()  # Dictionary of results
+        self.docs_tokens = dict()  # Dictionary of tokenized documents
+        self.queries_tokens = dict()  # Dictionary of tokenized queries
 
     def load_data(self):
         # Load documents
@@ -65,9 +64,9 @@ class Preprocess:
                 doc_id = copy.deepcopy(temp[2])  # Document ID
                 relevancy = copy.deepcopy(temp[3])[:-1]  # Result of relevancy (0 for not relevant, 1 for relevant)
                 if query_id not in results:  # Build results dictionary to store data properly
-                    results[query_id] = [(doc_id,relevancy)]
+                    results[query_id] = [(doc_id, relevancy)]
                 elif query_id in results:
-                    results[query_id].append((doc_id,relevancy))
+                    results[query_id].append((doc_id, relevancy))
                 else:
                     raise Exception("ERROR")
                 temp = f.readline()  # Read again
@@ -155,7 +154,8 @@ class Preprocess:
             bib = self.docs[key]['bib']
 
             # Build document tokens
-            self.docs_tokens[key] = {'title': copy.deepcopy(new_title), 'author': copy.deepcopy(author), 'bib': copy.deepcopy(bib), 'text': copy.deepcopy(new_text)}
+            self.docs_tokens[key] = {'title': copy.deepcopy(new_title), 'author': copy.deepcopy(author),
+                                     'bib': copy.deepcopy(bib), 'text': copy.deepcopy(new_text)}
 
         # Process queries
         for key, value in self.queries.items():
@@ -169,5 +169,3 @@ class Preprocess:
 
             # Build queries tokens
             self.queries_tokens[key] = copy.deepcopy(new_title)
-
-

@@ -7,7 +7,7 @@ class Okapi_BM25:
         self.doc_tokens = doc_tokens
         self.doc_list = [" ".join(value['text']) for _, value in doc_tokens.items()]
 
-    def compute_idf(self, doc_list):
+    def compute_idf(self, doc_list):  # Compute TFIDF scores and returns them
         idf_scores = {}
         N = len(doc_list)
         all_terms = set([term for doc in doc_list for term in doc.split()])
@@ -18,7 +18,7 @@ class Okapi_BM25:
 
         return idf_scores
 
-    def bm25(self, doc, query, idf_scores, k1=1.5, b=0.75):
+    def bm25(self, doc, query, idf_scores, k1=1.5, b=0.75):  # BM25 algorithm implemented with given parameters
         doc_terms = Counter(doc.split())
         avgdl = sum([len(doc.split()) for doc in self.doc_list]) / len(self.doc_list)
         score = 0
@@ -30,7 +30,7 @@ class Okapi_BM25:
 
         return score
 
-    def rank_documents(self, query, doc_list, top_k):
+    def rank_documents(self, query, doc_list, top_k):  # Method to rank documents based on the length of the query
         idf_scores = self.compute_idf(doc_list)
         query_length = len(query.split())
 
@@ -48,6 +48,6 @@ class Okapi_BM25:
 
         return ranked_docs[:top_k]
 
-    def start(self, query: str, top_k: int):
+    def start(self, query: str, top_k: int):  # Start method to start whole procedure
         ranked_docs = self.rank_documents(query, self.doc_list, top_k)
         return ranked_docs
